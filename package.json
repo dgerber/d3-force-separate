@@ -1,0 +1,14 @@
+{
+  "name": "d3-force-separate",
+  "version": "0.20140804.0",
+  "author": "Daniel Gerber",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dgerber/d3-force-separate.git"
+  },
+  "dependencies": {
+    "d3": "~3.3.13"
+  },
+  "license": "AGPL-3.0",
+  "main": "separate.js"
+}

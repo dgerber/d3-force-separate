@@ -1,0 +1,49 @@
+#+TITLE: d3-force-separate
+#+OPTIONS: H:1 num:nil
+
+This plugin augments the [[https://github.com/mbostock/d3/wiki/Force-Layout][force-directed layout]] in [[http://d3js.org/][d3.js]] with an algorithm for minimizing spatial overlap between nodes.
+
+The returned force-directed layout has a new listener [[https://github.com/mbostock/d3/wiki/Force-Layout#on][registered]] as /tick.separate/.
+
+#+BEGIN_SRC js
+  d3.layout.force.separate([force])
+    .padding(10)
+    .stickyness(.1)
+    .conformity(1.0)
+    .shape('rectangle')
+    .nodes(nodes).start();
+#+END_SRC
+
+You can play with the various parameters in [[http://bl.ocks.org/dgerber/6185526][this example]].
+
+* Attributes on nodes
+The following attributes are used in addition to the [[https://github.com/mbostock/d3/wiki/Force-Layout#wiki-nodes][native ones]]:
+- =x0=, =y0= :: a node's anchor / ideal position
+- =width=, =height= :: sizes used to determine when two nodes overlap
+
+* Configurable parameters
+- =padding= :: distance from a node within which another node is considered overlapping
+- =stickyness= :: strength with which nodes are attracted to their anchors (in the same way as the "gravity" parameter pulls nodes towards the layout's center)
+- =conformity= :: /a number between 0 and 1/, small values meaning that nodes can slide sideways and arrange more compactly
+- =shape= :: either /rectangle/ or /ellipse/, the shape used to detect overlap between two nodes
+- =loop= :: either /simple/ or /qtree/, this may impact performance in some cases (see [[file:separate.js][source]])
+
+
+* Code snippets
+
+** Setting nodes' sizes from [[http://www.w3.org/TR/SVG/types.html#__svg__SVGLocatable__getBBox][SVGLocatable.getBBox()]]
+#+BEGIN_SRC js
+  svg_selection.each(function(node){
+    var r = this.getBBox();
+    node.x0 = r.x + (node.width = r.width) *.5;
+    node.y0 = r.y + (node.height = r.height) *.5;
+  });
+#+END_SRC
+
+** Initializing nodes' positions
+#+BEGIN_SRC js
+  force.nodes().forEach(function(n){
+    if (typeof n.x === 'undefined') n.x = n.px = n.x0;
+    if (typeof n.y === 'undefined') n.y = n.py = n.y0;
+  });
+#+END_SRC
